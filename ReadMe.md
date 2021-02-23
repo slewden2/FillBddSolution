@@ -16,7 +16,7 @@ Of course, if necessary, the program charge it to populate parent tables too ;-)
 
 For me to learn :
   - .net core 5.0
-  - xunit
+  - xunit and moq
   - Connexion to database with core framework
 
 
