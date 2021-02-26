@@ -1,4 +1,4 @@
-﻿using System;
+﻿using EnsureThat;
 
 namespace FillDbLibrary.Implementation.Generator
 {
@@ -7,14 +7,22 @@ namespace FillDbLibrary.Implementation.Generator
   /// </summary>
   internal abstract class BaseGenerator : ITypeGenerator
   {
-    internal IRandomNumber random;
+    /// <summary>
+    /// Mémorise le générateur aléatoire à utiliser
+    /// </summary>
+    protected IRandomNumber random;
 
+    /// <summary>
+    /// Initialise une nouvelle instance de la classes <see cref="BaseGenerator"/>
+    /// </summary>
+    /// <param name="rnd">Le générateur aléatoire</param>
     public BaseGenerator(IRandomNumber rnd)
     {
-      random = rnd;
+      EnsureArg.IsNotNull(rnd, nameof(rnd));
+
+      this.random = rnd;
     }
-
-
+    
     /// <summary>
     /// Génère une valeur formattée pour être insérée en SQL
     /// </summary>

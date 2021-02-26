@@ -1,25 +1,50 @@
-﻿using FillDbLibrary.Implementation.Generator;
+﻿using EnsureThat;
+using FillDbLibrary.Implementation.Generator;
 using System;
 using System.Collections.Generic;
 
 namespace FillDbLibrary.Implementation
 {
+  /// <summary>
+  /// Classe qui fournit le bon générateur aléatoire en fonction des informations de Type SQL Server
+  /// </summary>
   public class TypeGeneratorFactory : ITypeGeneratorFactory
   {
     private Dictionary<string, ITypeGenerator> generators = new Dictionary<string, ITypeGenerator>();
     private readonly IRandomNumber random;
 
+    /// <summary>
+    /// Initialise une nouvelle instance de la classe <see cref="TypeGeneratorFactory"/>
+    /// </summary>
+    /// <param name="rnd">Le générateur aléatoire à utiliser</param>
     public TypeGeneratorFactory(IRandomNumber rnd)
     {
+      EnsureArg.IsNotNull(rnd, nameof(rnd));
+
       this.random = rnd;
     }
 
+    /// <summary>
+    /// Renvoie le générateur typé
+    /// </summary>
+    /// <param name="typeName">Nom du type sql Server</param>
+    /// <param name="precision">Précision associé au type</param>
+    /// <param name="maxLength">Taille maximale (principalement utilisé pour les chaines, mais aussi pour distinguer un smallDateTime d'une time)</param>
+    /// <returns>Le générateur typé</returns>
     public ITypeGenerator GetGenerator(string typeName, int precision, int maxLength)
     {
       string key = GetKey(typeName, precision, maxLength);
       if (!generators.ContainsKey(key))
       {
-        InsertGenerator(typeName, precision, maxLength);
+        var gen = InsertGenerator(typeName, precision, maxLength);
+        if (gen != null)
+        {
+          this.generators.Add(key, gen);
+        }
+        else
+        {
+          throw new NotImplementedException($"The type '{typeName}' is unknowed");
+        }
       }
 
       return generators[key];
@@ -27,80 +52,45 @@ namespace FillDbLibrary.Implementation
 
     private string GetKey(string typeName, int precision, int maxLength) => $"{typeName}:{precision}:{maxLength}";
 
-    private void InsertGenerator(string typeName, int precision, int maxLength)
+    private ITypeGenerator InsertGenerator(string typeName, int precision, int maxLength)
     {
-      ITypeGenerator gen = null;
-      switch (typeName.ToLower())
+      return (typeName.ToLower()) switch
       {
-        case "bit":
-          gen = new BitGenerator(this.random);
-          break;
-        case "char":
-          gen = new FixedLengthStringGenerator(this.random, maxLength, false);
-          break;
-        case "nchar":
-          gen = new FixedLengthStringGenerator(this.random, maxLength, true);
-          break;
-        case "date":
-        case "datetime":
-        case "datetime2":
-        case "time":
-        case "smalldatetime":
-        case "datetimeoffset":
-          gen = new DateTimeGenerator(this.random, precision, maxLength);
-          break;
-        case "nvarchar":
-        case "ntext":
-        case "sysname":
-          gen = new VariableLengthStringGenerator(this.random, maxLength, true);
-          break;
-        case "varchar":
-        case "text":
-          gen = new VariableLengthStringGenerator(this.random, maxLength, false);
-          break;
+        "bit"
+          => new BitGenerator(this.random),
 
-        case "decimal":
-        case "numeric":
-        case "float":
-        case "real":
-        case "money":
-        case "smallmoney":
-          gen = new DoubleGenerator(this.random);
-          break;
+        "char"
+          => new FixedLengthStringGenerator(this.random, maxLength, false),
 
-        case "tinyint":
-        case "smallint":
-        case "int":
-        case "bigint":
-          gen = new LongGenerator(this.random, precision);
-          break;
-        case "uniqueidentifier":
-          gen = new GuidGenerator(this.random);
-          break;
+        "nchar"
+          => new FixedLengthStringGenerator(this.random, maxLength, true),
 
-        case "binary":
-        case "geography":
-        case "geometry":
-        case "hierarchyid":
-        case "image":
-        case "sql_variant":
-        
-        case "varbinary":
-        case "xml":
-          throw new NotImplementedException($"The type '{typeName}' is valid, but it is not yet implemented");
+        "date" or "datetime" or "datetime2" or "time" or "smalldatetime" or "datetimeoffset" 
+          => new DateTimeGenerator(this.random, precision, maxLength),
 
-        case "timestamp":
-          throw new ArgumentException($"The type '{typeName}' is valid, but it cannot be generated");
-      }
+        "nvarchar" or "ntext" or "sysname"
+          => new VariableLengthStringGenerator(this.random, maxLength, true),
 
-      if (gen != null)
-      {
-        this.generators.Add(typeName, gen);
-      }
-      else
-      {
-        throw new NotImplementedException($"The type '{typeName}' is unknowed");
-      }
+        "varchar" or "text" 
+          => new VariableLengthStringGenerator(this.random, maxLength, false),
+
+        "decimal" or "numeric" or "float" or "real" or "money" or "smallmoney"
+          => new DoubleGenerator(this.random),
+
+        "tinyint" or "smallint" or "int" or "bigint" 
+          => new LongGenerator(this.random, precision),
+
+        "uniqueidentifier" 
+          => new GuidGenerator(this.random),
+
+        "binary" or "geography" or "geometry" or "hierarchyid" or "image" or "sql_variant" or "varbinary" or "xml" 
+          => throw new NotImplementedException($"The type '{typeName}' is valid, but it is not yet implemented"),
+
+        "timestamp" 
+          => throw new ArgumentException($"The type '{typeName}' is valid, but it cannot be generated"),
+
+        _ => null,
+      };
     }
   }
 }

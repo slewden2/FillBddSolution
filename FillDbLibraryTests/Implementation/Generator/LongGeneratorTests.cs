@@ -1,6 +1,7 @@
 ﻿using FillDbLibrary;
 using FillDbLibrary.Implementation.Generator;
 using Moq;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -16,7 +17,26 @@ namespace FillDbLibraryTests.Implementation.Generator
         new object[]{10, 100, "100"},
         new object[]{19, 200, "200"},
       };
-    
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-5)]
+    public void ConcructorWithWrongPrecisionFail(int precision)
+    {
+      // Arrange & Act & assert
+      Assert.Throws<ArgumentException>(() => new LongGenerator(Mock.Of<IRandomNumber>(), precision));
+    }
+
+    [Theory]
+    [InlineData(3)]
+    [InlineData(5)]
+    [InlineData(10)]
+    [InlineData(19)]
+    public void ConcructorWithGoodPrecisionWorks(int precision)
+    {
+      // Arrange & Act & assert
+      _ =  new LongGenerator(Mock.Of<IRandomNumber>(), precision);
+    }
 
     [Theory]
     [MemberData(nameof(ValidLong))]

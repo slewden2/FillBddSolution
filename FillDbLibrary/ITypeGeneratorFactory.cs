@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FillDbLibrary
+﻿namespace FillDbLibrary
 {
-    /// <summary>
-    /// Factorie en charge de l'instanciation du ou des générateurs
-    /// </summary>
-    public interface ITypeGeneratorFactory
+  /// <summary>
+  /// Factorie en charge de l'instanciation du ou des générateurs
+  /// </summary>
+  public interface ITypeGeneratorFactory
     {
         /// <summary>
         /// Renvoie le générateur associé au type défini

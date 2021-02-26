@@ -1,12 +1,22 @@
 ﻿using FillDbLibrary;
 using FillDbLibrary.Implementation.Generator;
 using Moq;
+using System;
 using Xunit;
 
 namespace FillDbLibraryTests.Implementation.Generator
 {
   public class FixedLengthStringGeneratorTests
   {
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(-5, false)]
+    public void ConcructorWithWrongLengthFail(int maxLength, bool unicode)
+    {
+      // Arrange & Act & assert
+      Assert.Throws<ArgumentOutOfRangeException>(() => new FixedLengthStringGenerator(Mock.Of<IRandomNumber>(), maxLength, unicode));
+    }
+
     [Theory]
     [InlineData("Bac", true, "N'Bac'")]
     [InlineData("z", false, "'z'")]
@@ -20,7 +30,6 @@ namespace FillDbLibraryTests.Implementation.Generator
       {
         x = x.Returns(CharMap.StandardChars.IndexOf(value[i]));
       }
-
 
       var sut = new FixedLengthStringGenerator(random.Object, value.Length, unicode);
 
