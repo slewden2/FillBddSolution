@@ -17,8 +17,8 @@ namespace FillDbLibrary.Implementation.Generator
     public LongGenerator(IRandomNumber rnd, int precision)
       : base(rnd)
     {
-      this.minValue = ComputeMin(precision);
-      this.maxValue = ComputeMax(precision);
+      this.minValue = ComputeMin(precision) + 1;
+      this.maxValue = ComputeMax(precision) - 1;
     }
 
     /// <summary>
@@ -38,11 +38,11 @@ namespace FillDbLibrary.Implementation.Generator
         // tinyInt
         3 => byte.MinValue,
         // SmallInt
-        5 => short.MinValue,
+        5 => -50, //short.MinValue,
         // Int
-        10 => int.MinValue,
+        10 => -50, //int.MinValue,
         // bigInt
-        19 => long.MinValue,
+        19 => -50, //long.MinValue,
         // default
         _ => throw new ArgumentException("Wrong Precision (3, 5, 10, 19 expected", nameof(precision)),
       };
@@ -56,13 +56,13 @@ namespace FillDbLibrary.Implementation.Generator
       => precision switch
       {
         // tinyInt
-        3 => byte.MaxValue,
+        3 => 50, //byte.MaxValue,
         // SmallInt
-        5 => short.MaxValue,
+        5 => 50, //short.MaxValue,
         // Int
-        10 => int.MaxValue,
+        10 => 50, //int.MaxValue,
         // bigInt
-        19 => long.MaxValue,
+        19 => 50, //long.MaxValue,
         // default
         _ => throw new ArgumentException("Wrong Precision (3, 5, 10, 19 expected", nameof(precision)),
       };

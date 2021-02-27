@@ -15,7 +15,7 @@ namespace FillDbLibraryTests.Implementation.Generator
         new object[] { 10, 0, new DateTime(1987, 5, 7), "'1987-05-07'" },
         new object[] { 16, 4, new DateTime(1901, 10, 1, 13, 46, 00), "'1901-10-01T13:46:00'" },
         new object[] { 16, 7, new DateTime(1999, 10, 1, 17, 6, 10, 40), "'17:06:10.0400000'" },
-        new object[] { 23, 0, new DateTime(2021, 2, 22, 0, 59, 17, 1), "'2021-02-22T00:59:17.0010000'" },
+        new object[] { 23, 0, new DateTime(2021, 2, 22, 0, 59, 17, 1), "'2021-02-22T00:59:17.001'" },
         new object[] { 27, 0, new DateTime(2000, 2, 22, 0, 59, 17, 0), "'2000-02-22T00:59:17.0000000'" },
       };
     public static IEnumerable<object[]> ValidDatesWithOffset =>

@@ -20,7 +20,7 @@ namespace FillDbLibrary.Implementation.Generator
     {
       EnsureArg.IsGt(maxLength, 0, nameof(maxLength));
 
-      this.maximumlength = maxLength;
+      this.maximumlength = maxLength / (unicode ? 2 : 1);
       this.isUnicode = unicode;
     }
 
@@ -35,7 +35,7 @@ namespace FillDbLibrary.Implementation.Generator
     /// Calculer la valeur à formatter
     /// </summary>
     /// <returns>La valeur Chaine variable</returns>
-    private string GetValue()
-      => new string(Enumerable.Repeat(CharMap.StandardChars, (int)random.Next(0, this.maximumlength)).Select(s => s[(int)random.Next(0, s.Length)]).ToArray());
+    private string GetValue() => new string(Enumerable.Repeat(CharMap.StandardChars, (int)random.Next(0, this.maximumlength))
+      .Select(s => s[(int)random.Next(0, s.Length -1)]).ToArray());
   }
 }

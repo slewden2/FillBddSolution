@@ -66,7 +66,7 @@ namespace FillDbLibrary.Implementation.Generator
             return new DatTimeTypeInfos(new DateTime(1, 1, 1), new DateTime(0001, 1, 1, 23, 59, 59, 999), "HH:mm:ss.fffffff");
           }
         case 23: // DateTime
-          return new DatTimeTypeInfos(new DateTime(1753, 1, 1), new DateTime(9999, 12, 31, 23, 59, 59, 997), "yyyy-MM-ddTHH:mm:ss.fffffff");
+          return new DatTimeTypeInfos(new DateTime(1753, 1, 1), new DateTime(9999, 12, 31, 23, 59, 59, 997), "yyyy-MM-ddTHH:mm:ss.fff");
         case 27: // DateTime2 
           return new DatTimeTypeInfos(new DateTime(1, 1, 1), new DateTime(9999, 12, 31, 23, 59, 59, 999), "yyyy-MM-ddTHH:mm:ss.fffffff");
         case 34: // DateTimeOffset

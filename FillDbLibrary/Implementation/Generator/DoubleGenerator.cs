@@ -29,6 +29,6 @@ namespace FillDbLibrary.Implementation.Generator
     /// Calculer la valeur à formatter
     /// </summary>
     /// <returns>La valeur double</returns>
-    private double GetValue() => random.Next(double.MinValue, double.MaxValue); 
+    private double GetValue() => random.Next(-500.5, 500.6); // (double.MinValue + 1, double.MaxValue -1); 
   }
 }
